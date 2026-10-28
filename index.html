@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#110c09">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mordomo">
+<title>Mordomo Soundboard</title>
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="start" class="start"><div class="start-in">
+  <div style="font-size:56px">🕯️</div>
+  <h1>The Traitor at the Table</h1>
+  <button id="startBtn" class="bigbtn">Start</button>
+  <p class="hint" style="margin-top:16px">Connect the speaker first. This tap unlocks sound and keeps the screen awake.</p>
+</div></div>
+
+<header class="top">
+  <div class="brand">Mordomo</div>
+  <div class="top-r">
+    <button id="installBtn" class="pill on" hidden>Install</button>
+    <button id="holdPill" class="pill warn" hidden>Music low · raise</button>
+    <button id="editBtn" class="pill">Edit</button>
+    <button id="stopAll" class="pill danger">Stop all</button>
+  </div>
+</header>
+<div id="timerBar" class="timerbar" hidden><span style="font-size:16px">Timer</span><b id="tTime">1:00</b><button id="tStop">Stop</button></div>
+
+<main>
+  <section id="tab-sounds">
+    <p class="hint" id="editHint" hidden>Edit mode: tap a button to give it your own sound file, rename it or change how the music behaves. Tap Edit again when done.</p>
+    <div id="board"></div>
+    <h2>Timer</h2>
+    <div class="card"><div class="chips" id="timerChips"></div><p class="hint" style="margin:10px 0 0">Ends with the Dinner bell sound.</p></div>
+  </section>
+
+  <section id="tab-music" hidden>
+    <h2>Playlist</h2>
+    <div class="now"><small>Now playing</small><b id="nowName">Nothing yet</b></div>
+    <div class="ctrl">
+      <button id="plPrev" aria-label="Previous">⏮</button>
+      <button id="plPlay" aria-label="Play or pause">▶</button>
+      <button id="plNext" aria-label="Next">⏭</button>
+      <button id="plShuf" class="txt">Shuffle</button>
+    </div>
+    <label class="btn dash">+ Add songs<input type="file" id="plFiles" accept="audio/*" multiple hidden></label>
+    <ol id="plList"></ol>
+    <p class="hint">The playlist loops. Songs are saved in this browser on this phone only.</p>
+    <div class="slider"><label><span>Music volume</span><span id="v_music"></span></label><input type="range" min="0" max="1" step="0.01" data-vol="music"></div>
+  </section>
+
+  <section id="tab-setup" hidden>
+    <h2>Volume</h2>
+    <div class="slider"><label><span>Master</span><span id="v_master"></span></label><input type="range" min="0" max="1" step="0.01" data-vol="master"></div>
+    <div class="slider"><label><span>Sound effects</span><span id="v_sfx"></span></label><input type="range" min="0" max="1" step="0.01" data-vol="sfx"></div>
+    <h2>Music under effects</h2>
+    <div class="slider"><label><span>Music level while an effect plays</span><span id="v_duck"></span></label><input type="range" min="0" max="0.8" step="0.01" data-vol="duck"></div>
+    <div class="slider"><label><span>Lower the music first, then play after</span><span id="v_lead"></span></label><input type="range" min="0" max="1500" step="50" id="lead"></div>
+    <div class="slider"><label><span>Music comes back over</span><span id="v_rise"></span></label><input type="range" min="0.3" max="4" step="0.1" id="rise"></div>
+    <h2>Sounds</h2>
+    <button class="btn" id="installBtn2" hidden>📲 Install on this phone</button>
+    <p class="hint" id="offlineState"></p>
+    <button class="btn" id="testSpk">🔔 Test the speaker</button>
+    <button class="btn danger" id="resetAll">Reset all buttons to placeholders</button>
+    <h2>Tips</h2>
+    <ol class="tips">
+      <li>Your files live on the phone you upload them from. Set up on the party phone.</li>
+      <li>Or put files in the GitHub repo, in a <code>sounds</code> folder named after the button, for example <code>sounds/bell.mp3</code>. They load on any device. A file uploaded on the phone wins over the repo file.</li>
+      <li>Repo file names: <span id="idList"></span></li>
+      <li>Keep this page open and the phone plugged in. On iPhone, turn the silent switch off.</li>
+      <li>Best formats: mp3 or m4a. Trim silence at the start of each file so it fires instantly.</li>
+    </ol>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button data-tab="sounds" class="on"><span>🔔</span>Sounds</button>
+  <button data-tab="music"><span>🎵</span>Music</button>
+  <button data-tab="setup"><span>⚙️</span>Setup</button>
+</nav>
+
+<div id="sheet" class="sheet" hidden><div class="sheet-in">
+  <div class="sheet-h"><b>Edit button</b><button id="shClose">Done</button></div>
+  <div class="two">
+    <label class="fld">Name<input type="text" id="shName" maxlength="28"></label>
+    <label class="fld">Icon (emoji)<input type="text" id="shIcon" maxlength="8"></label>
+  </div>
+  <p class="srcline" id="shSrc"></p>
+  <label class="btn dash">🎵 Choose sound file<input type="file" id="shFile" accept="audio/*" hidden></label>
+  <div class="two"><button class="btn" id="shTest">▶ Preview</button><button class="btn" id="shReset">Use placeholder</button></div>
+  <div class="fld">Music after the sound
+    <div class="seg" id="shAfter">
+      <button data-after="auto">Back up</button>
+      <button data-after="hold">Stay low</button>
+      <button data-after="restore">Back up, end "stay low"</button>
+    </div>
+  </div>
+  <label class="switch"><input type="checkbox" id="shLoop"><span>Loop until I tap the button again</span></label>
+  <div class="slider"><label><span>This sound's volume</span><span id="v_btn"></span></label><input type="range" min="0" max="1.5" step="0.01" id="shVol"></div>
+  <button class="btn danger" id="shDel">Delete this button</button>
+</div></div>
+
+<script src="app.js" defer></script>
+</body>
+</html>
